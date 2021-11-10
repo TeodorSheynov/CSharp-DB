@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/EF-Core/LINQ/obj
+/.vs
+/EF-Core/EF-Introduction/obj
+/EF-Core/Entity-Relations/FootballBetting/.vs/FootballBetting
+/EF-Core/Entity-Relations/FootballBetting/obj
+/EF-Core/Entity-Relations/FootballBetting.Data/obj
+/EF-Core/Entity-Relations/FootballBetting.Data.Models/obj
