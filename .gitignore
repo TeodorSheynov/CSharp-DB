@@ -2,22 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/EF-Core/LINQ/obj
+/.vs/C#-DB/v16
 /.vs
-/EF-Core/EF-Introduction/obj
-/EF-Core/Entity-Relations/FootballBetting/.vs/FootballBetting
-/EF-Core/Entity-Relations/FootballBetting/obj
-/EF-Core/Entity-Relations/FootballBetting.Data/obj
-/EF-Core/Entity-Relations/FootballBetting.Data.Models/obj
-/EF-Core/Advanced-Querying/.vs/BookShop
-/EF-Core/Advanced-Querying/BookShop/bin/Debug/netcoreapp3.1
-/EF-Core/Advanced-Querying/BookShop/obj/Debug/netcoreapp3.1
-/EF-Core/Advanced-Querying/BookShop/obj
-/EF-Core/Advanced-Querying/BookShop.Data/bin/Debug/netcoreapp3.1
-/EF-Core/Advanced-Querying/BookShop.Data/obj
-/EF-Core/Advanced-Querying/BookShop.Initializer/bin/Debug/netcoreapp3.1
-/EF-Core/Advanced-Querying/BookShop.Initializer/obj
-/EF-Core/Advanced-Querying/BookShop.Models/bin/Debug/netcoreapp3.1
-/EF-Core/Advanced-Querying/BookShop.Models/obj
-/EF-Core/Advanced-Querying/06. Advanced-Querying-Exercises.docx
-/EF-Core/Advanced-Querying/BookShop.zip
+/EF-Core
