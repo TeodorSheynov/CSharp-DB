@@ -1,4 +1,6 @@
-﻿namespace CarDealer
+﻿using System.Xml;
+
+namespace CarDealer
 {
     using System;
     using System.Collections.Generic;
@@ -29,8 +31,8 @@
 
             //ResetDb(dbContext);
 
-            //string inputXml = File.ReadAllText("../../../Datasets/sales.xml");
-            string result = GetSalesWithAppliedDiscount(dbContext);
+            string inputXml = File.ReadAllText("../../../Datasets/parts.xml");
+            string result = ImportParts(dbContext,inputXml);
 
             Console.WriteLine(result);
         }
@@ -71,37 +73,13 @@
         //Problem 10
         public static string ImportParts(CarDealerContext context, string inputXml)
         {
-            XmlRootAttribute xmlRoot = new XmlRootAttribute("Parts");
-            XmlSerializer xmlSerializer = new XmlSerializer(
-                typeof(ImportPartDto[]), xmlRoot);
+            var xmlSerializer = new XmlSerializer(typeof(ImportPartDto[]), new XmlRootAttribute("Parts"));
 
-            using StringReader stringReader = new StringReader(inputXml);
-
-            ImportPartDto[] partDtos = (ImportPartDto[])
-                xmlSerializer.Deserialize(stringReader);
-
-            ICollection<Part> parts = new HashSet<Part>();
-            foreach (ImportPartDto partDto in partDtos)
-            {
-                Supplier supplier = context
-                    .Suppliers
-                    .Find(partDto.SupplierId);
-
-                if (supplier == null)
-                {
-                    continue;
-                }
-
-                Part p = new Part()
-                {
-                    Name = partDto.Name,
-                    Price = decimal.Parse(partDto.Price),
-                    Quantity = partDto.Quantity,
-                    Supplier = supplier
-                };
-
-                parts.Add(p);
-            }
+            var partDtos = (ImportPartDto[])xmlSerializer
+                .Deserialize(new StringReader(inputXml));
+            ICollection<Part> parts = mapper.Map<Part[]>(partDtos)
+                .Where(x => context.Suppliers.Any(z => z.Id == x.SupplierId))
+                .ToList();
 
             context.Parts.AddRange(parts);
             context.SaveChanges();

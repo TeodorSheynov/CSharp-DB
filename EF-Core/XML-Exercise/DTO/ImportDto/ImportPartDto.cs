@@ -1,6 +1,8 @@
-﻿namespace CarDealer.DTO.ImportDto
+﻿using System.Xml.Serialization;
+
+
+namespace CarDealer.DTO.ImportDto
 {
-    using System.Xml.Serialization;
 
     [XmlType("Part")]
     public class ImportPartDto
