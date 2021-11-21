@@ -96,6 +96,34 @@ namespace ProductShop
             return SerilizeJson(products);
 
         }
+        //Query 7. 
+        public static string GetSoldProducts(ProductShopContext context)
+        {
+
+            var usersWithSoldItem = context
+                .Users
+                .Where(u => u.ProductsSold.Any(ps => ps.Buyer != null))
+                .Select(u => new
+                {
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    soldProducts = u.ProductsSold
+                        .Select(p => new
+                        {
+                            name = p.Name,
+                            price = p.Price,
+                            buyerFirstName = p.Buyer.FirstName,
+                            buyerLastName = p.Buyer.LastName
+                        })
+
+                })
+                .OrderBy(u => u.lastName)
+                .ThenBy(u => u.firstName)
+                .ToList();
+
+            var result = JsonConvert.SerializeObject(usersWithSoldItem, Formatting.Indented);
+            return result;
+        }
         //Query 8. Export Categories by Products Count
         public static string GetCategoriesByProductsCount(ProductShopContext context)
         {
