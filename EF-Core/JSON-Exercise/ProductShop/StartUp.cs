@@ -34,7 +34,7 @@ namespace ProductShop
             //Console.WriteLine(ImportCategories(context, categoryInputJson));
             //var categoryProductsInputJson = File.ReadAllText("../../../Datasets/categories-products.json");
             //Console.WriteLine(ImportCategoryProducts(context, categoryProductsInputJson));
-            Console.WriteLine(GetCategoriesByProductsCount(context));
+            Console.WriteLine(GetUsersWithProducts(context));
 
         }
         //TODO: Query 1. Import Data
@@ -119,10 +119,10 @@ namespace ProductShop
                 })
                 .OrderBy(u => u.lastName)
                 .ThenBy(u => u.firstName)
-                .ToList();
+                .ToArray();
 
-            var result = JsonConvert.SerializeObject(usersWithSoldItem, Formatting.Indented);
-            return result;
+           
+            return SerilizeJson(usersWithSoldItem);
         }
         //Query 8. Export Categories by Products Count
         public static string GetCategoriesByProductsCount(ProductShopContext context)
@@ -142,6 +142,35 @@ namespace ProductShop
 
             
             return SerilizeJson(categories);
+        }
+        //Query 9. Export Users and Products
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var usersAndProducts = context
+                .Users
+                .Where(u => u.ProductsSold.Any())
+                .Select(u => new
+                {
+                    lastName = u.LastName,
+                    age = u.Age,
+                    soldProducts = new
+                    {
+                        count = u.ProductsSold.Count(b => b.Buyer != null),
+                        products = u.ProductsSold
+                            .Where(b=>b.Buyer!=null)
+                            .Select(p => new
+                        {
+                            name = p.Name,
+                            price = p.Price
+                        }).ToList()
+                    },
+                })
+                .OrderByDescending(u=>u.soldProducts.count)
+                .ToList();
+
+            return JsonConvert.SerializeObject(usersAndProducts, Formatting.Indented);
+
+
         }
         public static string SerilizeJson(Array entityCollection)
         {
