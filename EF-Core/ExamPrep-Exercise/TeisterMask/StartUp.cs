@@ -17,17 +17,17 @@
 
             Mapper.Initialize(cfg => cfg.AddProfile<TeisterMaskProfile>());
 
-            ResetDatabase(context, shouldDropDatabase: false);
+            ResetDatabase(context, shouldDropDatabase: true);
 
-            //var projectDir = GetProjectDirectory();
+            var projectDir = GetProjectDirectory();
 
-            //ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
+            ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
 
-            //ExportEntities(context, projectDir + @"ExportResults/");
+            ExportEntities(context, projectDir + @"ExportResults/");
 
-            //using var transaction = context.Database.BeginTransaction();
+            using var transaction = context.Database.BeginTransaction();
 
-            //transaction.Rollback();
+            transaction.Rollback();
         }
 
         private static void ImportEntities(TeisterMaskContext context, string baseDir, string exportDir)
