@@ -17,7 +17,7 @@
 
             Mapper.Initialize(cfg => cfg.AddProfile<TeisterMaskProfile>());
 
-            ResetDatabase(context, shouldDropDatabase: true);
+            ResetDatabase(context, shouldDropDatabase: false);
 
             var projectDir = GetProjectDirectory();
 

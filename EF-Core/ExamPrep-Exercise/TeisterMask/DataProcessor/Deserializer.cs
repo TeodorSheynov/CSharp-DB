@@ -32,9 +32,11 @@ namespace TeisterMask.DataProcessor
         public static string ImportProjects(TeisterMaskContext context, string xmlString)
         {
             StringBuilder sb = new StringBuilder();
+
             XmlRootAttribute root = new XmlRootAttribute("Projects");
             XmlSerializer serializer = new XmlSerializer(typeof(ImportProjectsDto[]), root);
             using StringReader sr = new StringReader(xmlString);
+
             var projectsDto =(ImportProjectsDto[]) serializer.Deserialize(sr);
 
 
@@ -142,10 +144,9 @@ namespace TeisterMask.DataProcessor
         {
             StringBuilder sb = new StringBuilder();
 
-            ImportEmployeeDto[] employeeDtos = JsonConvert.DeserializeObject<ImportEmployeeDto[]>(jsonString);
-
-            HashSet<Employee> validEmployees = new HashSet<Employee>();
-            foreach (ImportEmployeeDto employeeDto in employeeDtos)
+            ImportEmployeeDto[] dto = JsonConvert.DeserializeObject<ImportEmployeeDto[]>(jsonString);
+            var eEmployees = new HashSet<Employee>();
+            foreach (var employeeDto in dto)
             {
                 if (!IsValid(employeeDto))
                 {
@@ -160,12 +161,12 @@ namespace TeisterMask.DataProcessor
                     Phone = employeeDto.Phone
                 };
 
-                HashSet<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>();
-                foreach (int taskId in employeeDto.Tasks.Distinct())
+                var tasks = new HashSet<EmployeeTask>();
+                foreach (var employeeDtoTask in employeeDto.Tasks.Distinct())
                 {
                     Task task = context
                         .Tasks
-                        .Find(taskId);
+                        .Find(employeeDtoTask);
 
                     if (task == null)
                     {
@@ -173,22 +174,21 @@ namespace TeisterMask.DataProcessor
                         continue;
                     }
 
-                    EmployeeTask employeeTask = new EmployeeTask()
+                    EmployeeTask et = new EmployeeTask()
                     {
                         Employee = e,
-                        TaskId = taskId
+                        Task = task
                     };
-                    employeeTasks.Add(employeeTask);
+
+                    tasks.Add(et);
+
                 }
 
-                e.EmployeesTasks = employeeTasks;
-
-                validEmployees.Add(e);
-
-                sb.AppendLine(String.Format(SuccessfullyImportedEmployee, e.Username, employeeTasks.Count));
+                e.EmployeesTasks = tasks;
+                eEmployees.Add(e);
+                sb.AppendLine(String.Format(SuccessfullyImportedEmployee, e.Username, e.EmployeesTasks.Count));
             }
-
-            context.Employees.AddRange(validEmployees);
+            context.Employees.AddRange(eEmployees);
             context.SaveChanges();
 
             return sb.ToString().TrimEnd();
